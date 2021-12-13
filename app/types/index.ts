@@ -1,4 +1,4 @@
-import type { Socket as ServerSocket } from "socket.io";
+import type { Server, Socket as ServerSocket } from "socket.io";
 import type { Socket as ClientSocket } from "socket.io-client";
 
 export const enum Status {
@@ -36,6 +36,12 @@ export type GomokuClientSocket = ClientSocket<
   ClientToServerEvents
 >;
 export type GomokuServerSocket = ServerSocket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>;
+export type GomokuServer = Server<
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,

@@ -1,7 +1,7 @@
 import { useUserList } from "~/hooks/useUserList";
 
 export const UserList = () => {
-  const { userList, setUserList } = useUserList();
+  const [userList, setUserList] = useUserList();
 
   return (
     <>
