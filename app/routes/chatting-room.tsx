@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import type {User } from "@prisma/client";
 import {
   Link,
   LinksFunction,
@@ -7,13 +7,13 @@ import {
   useLoaderData,
 } from "remix";
 import { UserList } from "~/components/UserList";
-import { getUser } from "~/utils/session.server";
-import { hall } from "~/utils/socket.server";
+import { getUser, requireJWT } from "~/utils/session.server";
 import stylesUrl from "../styles/chatting-room.css";
 
 type ChattingRoomData = {
   userList: User[];
   curUser: User;
+  token:string
 };
 
 export const links: LinksFunction = () => {
@@ -27,16 +27,17 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const curUser = await getUser(request);
-  const userList = hall.userList;
+  const token = await requireJWT(request)
+  const userList:User[] = [];
   return {
     userList,
     curUser,
+    token
   };
 };
 
 export default function ChattingRoom() {
   const data = useLoaderData<ChattingRoomData>();
-
   return (
     <div className="jokes-layout">
       <header className="jokes-header">
@@ -66,7 +67,7 @@ export default function ChattingRoom() {
           <div className="jokes-list">
             <Link to=".">Get a random joke</Link>
             <p>Here are a few more jokes to check out:</p>
-            <UserList />
+            <UserList jwt={data.token}/>
             <Link to="new" className="button">
               Add your own
             </Link>

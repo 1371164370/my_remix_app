@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { socket } from "~/socket.client";
-import { useStore } from "~/models";
-import { User } from "~/types";
+import { User } from "../../types";
+import { useSocket } from "./useSocket";
 
-export const useUserList = (): [
+export const useUserList = (jwt: string): [
   User[],
   React.Dispatch<React.SetStateAction<User[]>>
 ] => {
   const [userList, setUserList] = useState<User[]>([]);
-  const [{ socket }, _] = useStore("SocketModel");
+  const socket = useSocket(jwt)
 
   useEffect(() => {
     socket?.on("user_list_change", (userList) => {
@@ -17,7 +16,7 @@ export const useUserList = (): [
     return () => {
       socket?.off("user_list_change");
     };
-  }, []);
+  }, [socket]);
 
   return [userList, setUserList];
 };

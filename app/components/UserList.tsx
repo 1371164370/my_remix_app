@@ -1,13 +1,18 @@
 import { useUserList } from "~/hooks/useUserList";
+import { ClientOnly } from "./ClientOnly";
+interface Props{
+  jwt:string
+}
 
-export const UserList = () => {
-  const [userList, setUserList] = useUserList();
+export const UserList = ({jwt}:Props) => {
+  // const [userList, setUserList] = useUserList(jwt);
 
   return (
-    <>
-      {userList.map((user) => (
+    <ClientOnly fallback={'loading'}>
+     UserList
+      {/* {userList.map((user) => (
         <>{JSON.stringify(user)}</>
-      ))}
-    </>
+      ))} */}
+    </ClientOnly>
   );
 };

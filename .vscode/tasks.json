@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": [],
+			"label": "npm: dev",
+			"detail": "remix watch"
+		},
+		{
+			"type": "npm",
+			"script": "start:dev",
+			"problemMatcher": [],
+			"label": "npm: start:dev",
+			"detail": "cross-env NODE_ENV=development ts-node server/index.ts"
+		},
+		{
+			"label": "dev",
+			"dependsOrder": "parallel",
+			"dependsOn": [
+				"npm: dev",
+				"npm: start:dev"
+			],
+			"problemMatcher": []
+		}
+	]
+}

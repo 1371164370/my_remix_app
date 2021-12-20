@@ -1,5 +1,6 @@
 import type { MetaFunction, LoaderFunction } from "remix";
 import { useLoaderData, json, Link } from "remix";
+import { UserList } from "~/components/UserList";
 
 type IndexData = {
   resources: Array<{ name: string; url: string }>;
@@ -78,13 +79,11 @@ export default function Index() {
       <aside>
         <h2>Demos In This App</h2>
         <ul>
-          {data.demos.map(demo => (
-            <li key={demo.to} className="remix__page__resource">
-              <Link to={demo.to} prefetch="intent">
-                {demo.name}
+            <li key={'/chatting-room'} className="remix__page__resource">
+              <Link to={'/chatting-room'} prefetch="intent">
+                {"聊天室"}
               </Link>
             </li>
-          ))}
         </ul>
         <h2>Resources</h2>
         <ul>

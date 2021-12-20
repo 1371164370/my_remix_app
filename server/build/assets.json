@@ -1,0 +1,68 @@
+{
+  "version": "a2f963af",
+  "entry": {
+    "module": "/build/entry.client-366R4GKF.js",
+    "imports": [
+      "/build/_shared/chunk-ERW2JRHR.js",
+      "/build/_shared/chunk-MEDDPER5.js"
+    ]
+  },
+  "routes": {
+    "root": {
+      "id": "root",
+      "path": "",
+      "module": "/build/root-NAIKRZZG.js",
+      "hasAction": false,
+      "hasLoader": false,
+      "hasCatchBoundary": false,
+      "hasErrorBoundary": false
+    },
+    "routes/chatting-room": {
+      "id": "routes/chatting-room",
+      "parentId": "root",
+      "path": "chatting-room",
+      "module": "/build/routes/chatting-room-MV6MEJUJ.js",
+      "imports": [
+        "/build/_shared/chunk-JPMNA6M3.js"
+      ],
+      "hasAction": false,
+      "hasLoader": true,
+      "hasCatchBoundary": false,
+      "hasErrorBoundary": false
+    },
+    "routes/game-room": {
+      "id": "routes/game-room",
+      "parentId": "root",
+      "path": "game-room",
+      "module": "/build/routes/game-room-L7QZ6IRG.js",
+      "hasAction": false,
+      "hasLoader": false,
+      "hasCatchBoundary": false,
+      "hasErrorBoundary": false
+    },
+    "routes/index": {
+      "id": "routes/index",
+      "parentId": "root",
+      "index": true,
+      "module": "/build/routes/index-BVEMFGLS.js",
+      "hasAction": false,
+      "hasLoader": true,
+      "hasCatchBoundary": false,
+      "hasErrorBoundary": false
+    },
+    "routes/login": {
+      "id": "routes/login",
+      "parentId": "root",
+      "path": "login",
+      "module": "/build/routes/login-3UTRA7RX.js",
+      "imports": [
+        "/build/_shared/chunk-JPMNA6M3.js"
+      ],
+      "hasAction": true,
+      "hasLoader": false,
+      "hasCatchBoundary": false,
+      "hasErrorBoundary": false
+    }
+  },
+  "url": "/build/manifest-A2F963AF.js"
+}

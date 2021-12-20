@@ -1,11 +1,7 @@
 import bcrypt from "bcrypt";
 import { createCookieSessionStorage, redirect } from "remix";
-import type { Socket } from "socket.io";
 import { db } from "./db.server";
-
-function isSocket(socket:any) :socket is Socket {
-  return socket&&socket.handshake&&socket.nsp&&socket.nsp&&socket.id
-}
+import jwt from 'jsonwebtoken'
 
 type LoginForm = {
   username: string;
@@ -26,7 +22,6 @@ export async function login({
     user.passwordHash
   );
   if (!isCorrectPassword) return null;
-
   return user;
 }
 
@@ -50,7 +45,7 @@ const storage = createCookieSessionStorage({
   }
 });
 
-export async function getUser(request: Request|Socket) {
+export async function getUser(request: Request) {
   const userId = await getUserId(request);
   if (typeof userId !== "string") {
     return null;
@@ -62,12 +57,7 @@ export async function getUser(request: Request|Socket) {
     });
     return user;
   } catch {
-    if(isSocket(request)){
-      
-    }else{
-
-      throw logout(request);
-    }
+    throw logout(request);
   }
 }
 
@@ -83,43 +73,56 @@ export async function logout(request: Request) {
 }
 
 export async function register({
-    username,
-    password
-  }: LoginForm) {
-    const passwordHash = await bcrypt.hash(password, 10);
-    return db.user.create({
-      data: { username, passwordHash }
-    });
-  }
+  username,
+  password
+}: LoginForm) {
+  const passwordHash = await bcrypt.hash(password, 10);
+  return db.user.create({
+    data: { username, passwordHash }
+  });
+}
 
-export function getUserSession(request: Request|Socket) {
-    if(isSocket(request)){
-      return storage.getSession(request.request.headers.cookie);
-    }
-    return storage.getSession(request.headers.get("Cookie"));
+export function getUserSession(request: Request) {
+  return storage.getSession(request.headers.get("Cookie"));
+}
+
+export async function requireJWT(request: Request) {
+  const userId = await requireUserId(request)
+  try {
+    const user = await db.user.findUnique({
+      where: { id: userId }
+    });
+    if (!user) throw logout(request)
+    const { username, passwordHash } = user
+    const token = jwt.sign({ username, passwordHash: passwordHash }, process.env.SESSION_SECRET as string, { expiresIn: "7d" })
+
+    return token
+  } catch {
+    throw logout(request);
   }
-  
-  export async function getUserId(request: Request|Socket) {
-    const session = await getUserSession(request);
-    const userId = session.get("userId");
-    if (!userId || typeof userId !== "string") return null;
-    return userId;
+}
+
+export async function getUserId(request: Request) {
+  const session = await getUserSession(request);
+  const userId = session.get("userId");
+  if (!userId || typeof userId !== "string") return null;
+  return userId;
+}
+
+export async function requireUserId(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) {
+  const session = await getUserSession(request);
+  const userId = session.get("userId");
+  if (!userId || typeof userId !== "string") {
+    const searchParams = new URLSearchParams([
+      ["redirectTo", redirectTo]
+    ]);
+    throw redirect(`/login?${searchParams}`);
   }
-  
-  export async function requireUserId(
-    request: Request,
-    redirectTo: string = new URL(request.url).pathname
-  ) {
-    const session = await getUserSession(request);
-    const userId = session.get("userId");
-    if (!userId || typeof userId !== "string") {
-      const searchParams = new URLSearchParams([
-        ["redirectTo", redirectTo]
-      ]);
-      throw redirect(`/login?${searchParams}`);
-    }
-    return userId;
-  }
+  return userId;
+}
 
 export async function createUserSession(
   userId: string,
